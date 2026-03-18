@@ -41,10 +41,12 @@ It works both on create and edit forms.
 
 ## Props
 
-| Prop                  | Required | Type       | Default                                                  | Description                                                           |
+| Prop                  | Required | Type       | Default                            | Description                                                                                 |
 | --------------------- | -------- | ---------- | -------------------------------------------------------- | --------------------------------------------------------------------- |
-| `getStoreKey`         | -        | `function` | -                                                        | Function to use your own store key.                                   |
-| `notificationMessage` | -        | `string`   | "Applied previous unsaved changes" | Notification message to inform users that their previously saved changes have been applied. |
+| `getStoreKey`         | -        | `function` | -                                  | Function to use your own store key.                                                         |
+| `maxAge`              | -        | `number`    | -                                    | The age in seconds before a stored value is removed from the store  |
+| `notification`        | -        | `ReactNode` | `<AutoPersist Notification>`       | The element used to show the notification, that allows users to reset the form.             |
+| `notification Message` | -        | `string`   | "Applied previous unsaved changes" | Notification message to inform users that their previously saved changes have been applied. |
 
 ## `getStoreKey`
 
@@ -66,6 +68,57 @@ You can override this key by passing a custom function as the `getStoreKey` prop
             `my-custom-persist-key-${resource}-${record && record.hasOwnProperty('id') ? record.id : 'create'}`
     }
 />
+```
+
+## `maxAge`
+
+Storing many values in the `store` (especially with `localStorage`) may consume all the allowed space depending on the browser. You can provide a number of seconds to the `maxAge` prop so that older values are automatically removed whenever new values are stored.
+
+**Note**: This feature requires a [Store](./Store.md) that implements the `listItems` function (both `localStorageStore` and `memoryStore` do).
+
+**Note**: This feature is disabled when providing the `getStoreKey` prop.
+
+```tsx
+<AutoPersistInStore
+    maxAge={10 * 60} // 10 minutes
+/>
+```
+
+## `notification`
+
+When `<AutoPersistInStore>` component applies the changes from the store to a form, react-admin informs users with a notification.
+This notification also provides them a way to revert the changes from the store.
+
+You can make your own element and pass it using the `notification` prop:
+
+```tsx
+import { Translate, useCloseNotification, useEvent } from 'react-admin';
+import { AutoPersistInStore, useAutoPersistInStoreContext } from '@react-admin/ra-form-layout';
+import { Alert } from '@mui/material';
+
+const MyAutoPersistInStore = () => (
+    <AutoPersistInStore notification={<AutoPersistNotification />} />
+);
+
+const AutoPersistNotification = () => {
+    const closeNotification = useCloseNotification();
+    const { reset } = useAutoPersistInStoreContext();
+
+    const cancel = useEvent((event: React.MouseEvent) => {
+        event.preventDefault();
+        reset();
+        closeNotification();
+    });
+
+    return (
+        <Alert
+            severity="info"
+            action={<Button label="ra.action.cancel" onClick={cancel} />}
+        >
+          <Translate i18nKey="ra-form-layout.auto_persist_in_store.applied_changes" />
+        </Alert>
+    );
+};
 ```
 
 ## `notificationMessage`

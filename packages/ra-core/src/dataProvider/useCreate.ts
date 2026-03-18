@@ -94,6 +94,7 @@ export const useCreate = <
         mutationMode = 'pessimistic',
         getMutateWithMiddlewares,
         mutationFn: customMutationFn,
+        onSettled,
         ...mutationOptions
     } = options;
     const wrappedCustomMutationFn = customMutationFn as
@@ -225,16 +226,17 @@ export const useCreate = <
                     exact: true,
                 });
             },
-            onSettled: (
-                result,
-                error,
-                variables,
-                context: { snapshot: Snapshot }
-            ) => {
+            onSettled: (...args) => {
+                const [, , , mutateResult] = args;
+
                 // For creation, we always refetch after error or success:
-                context.snapshot.forEach(([queryKey]) => {
-                    queryClient.invalidateQueries({ queryKey });
-                });
+                (mutateResult as { snapshot: Snapshot }).snapshot.forEach(
+                    ([queryKey]) => {
+                        queryClient.invalidateQueries({ queryKey });
+                    }
+                );
+
+                onSettled?.(...args);
             },
         }
     );

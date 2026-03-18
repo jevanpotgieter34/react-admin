@@ -8,7 +8,7 @@ storybook_path: ra-ui-materialui-input-selectinput--basic
 
 To let users choose a value in a list using a dropdown, use `<SelectInput>`. It renders using [Material UI's `<Select>`](https://mui.com/api/select).
 
-<iframe src="https://www.youtube-nocookie.com/embed/2QKZWI2vsec" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen style="aspect-ratio: 16 / 9;width:100%;margin-bottom:1em;"></iframe>
+<iframe src="https://www.youtube-nocookie.com/embed/2QKZWI2vsec" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen style="aspect-ratio: 16 / 9;width:100%;margin-bottom:1em;" referrerpolicy="strict-origin-when-cross-origin"></iframe>
 
 This input allows editing record fields that are scalar values, e.g. `123`, `'admin'`, etc.
 
@@ -32,10 +32,10 @@ import { SelectInput } from 'react-admin';
   Your browser does not support the video tag.
 </video>
 
-
 By default, the possible choices are built from the `choices` prop, using:
-  - the `id` field as the option value,
-  - the `name` field as the option text
+
+- the `id` field as the option value,
+- the `name` field as the option text
 
 The form value for the source must be the selected value, e.g.
 
@@ -49,10 +49,12 @@ The form value for the source must be the selected value, e.g.
 
 **Tip**: React-admin includes other components to edit such values:
 
- - [`<AutocompleteInput>`](./AutocompleteInput.md) renders a list of suggestions in an autocomplete input
- - [`<RadioButtonGroupInput>`](./RadioButtonGroupInput.md) renders a list of radio buttons
+- [`<AutocompleteInput>`](./AutocompleteInput.md) renders a list of suggestions in an autocomplete input
+- [`<RadioButtonGroupInput>`](./RadioButtonGroupInput.md) renders a list of radio buttons
 
 **Tip**: If you need to let users select multiple items in the list, check out the [`<SelectArrayInput>`](./SelectArrayInput.md) component.
+
+**Tip**: If your options are numerous or require several columns to disambiguate choices, use [`<DataTableInput>`](./DataTableInput.md) instead.
 
 ## Props
 
@@ -158,6 +160,7 @@ const choices = categories.map(value => ({ id: value, name: value }));
 To allow users to add new options, pass a React element as the `create` prop. `<SelectInput>` will then render a "Create" menu item at the bottom of the list, which will render the passed element when clicked.
 
 {% raw %}
+
 ```jsx
 import { 
     Create, 
@@ -224,6 +227,7 @@ const CreateAuthor = () => {
     );
 };
 ```
+
 {% endraw %}
 
 If you want to customize the label of the "Create" option, use [the `createLabel` prop](#createlabel).
@@ -350,6 +354,7 @@ Use the `onCreate` prop to allow users to create new options on the fly. When en
 The following example shows how to trigger a prompt for the user to enter a new category:
 
 {% raw %}
+
 ```js
 import { SelectInput, Create, SimpleForm, TextInput } from 'react-admin';
 
@@ -377,13 +382,14 @@ const PostCreate = () => {
     );
 }
 ```
+
 {% endraw %}
 
 If you want to customize the label of the "Create" option, use [the `createLabel` prop](#createlabel).
 
 When used inside a `<ReferenceInput>`, the `onCreate` prop should create a new record in the reference resource, and return it. See [Creating a New Reference](./ReferenceInput.md#creating-a-new-reference) for more details.
 
-<iframe src="https://www.youtube-nocookie.com/embed/CIUp5MF6A1M" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen style="aspect-ratio: 16 / 9;width:100%;margin-bottom:1em;"></iframe>
+<iframe src="https://www.youtube-nocookie.com/embed/CIUp5MF6A1M" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen style="aspect-ratio: 16 / 9;width:100%;margin-bottom:1em;" referrerpolicy="strict-origin-when-cross-origin"></iframe>
 
 If a prompt is not enough, you can use [the `create` prop](#create) to render a custom component instead.
 
@@ -594,7 +600,7 @@ const CompanyInput = () => {
 As this is a common task, react-admin provides a shortcut to do the same in a declarative way: [`<ReferenceInput>`](./ReferenceInput.md):
 
 ```jsx
-import { ReferenceInput, SelectInput } from 'react-admin';
+import { ReferenceInput, SelectInput, required } from 'react-admin';
 
 const CompanyInput = () => (
     <ReferenceInput reference="companies" source="company_id">
@@ -602,16 +608,19 @@ const CompanyInput = () => (
             label="Company"
             source="company_id"
             optionText="name"
+            validate={required()}
         />
     </ReferenceInput>
 );
 ```
 
+**Tip**: When the input needs validation (e.g. `required()`), add the `validate` prop to the child `<SelectInput>`. `<ReferenceInput>` doesn't accept validation props.
+
 `<ReferenceInput>` is a headless component that:
 
- - fetches a list of records with `dataProvider.getList()` and `dataProvider.getOne()`, using the `reference` prop for the resource,
- - puts the result of the fetch in the `ChoiceContext` as the `choices` prop, as well as the `isPending` state,
- - and renders its child component
+- fetches a list of records with `dataProvider.getList()` and `dataProvider.getOne()`, using the `reference` prop for the resource,
+- puts the result of the fetch in the `ChoiceContext` as the `choices` prop, as well as the `isPending` state,
+- and renders its child component
 
 When rendered as a child of `<ReferenceInput>`, `<SelectInput>` reads that `ChoiceContext` to populate its own `choices` and `isPending` props.
 
@@ -641,11 +650,12 @@ This is the recommended approach for using `<SelectInput>` to select a foreign k
 
 The `<SelectInput>` can allow users to create a new choice if either the `create` or `onCreate` prop is provided.
 
-<iframe src="https://www.youtube-nocookie.com/embed/CIUp5MF6A1M" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen style="aspect-ratio: 16 / 9;width:100%;margin-bottom:1em;"></iframe>
+<iframe src="https://www.youtube-nocookie.com/embed/CIUp5MF6A1M" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen style="aspect-ratio: 16 / 9;width:100%;margin-bottom:1em;" referrerpolicy="strict-origin-when-cross-origin"></iframe>
 
 Use the `onCreate` prop when you only require users to provide a simple string and a `prompt` is enough. You can return either the new choice directly or a Promise resolving to the new choice.
 
 {% raw %}
+
 ```js
 import { SelectInput, Create, SimpleForm, TextInput } from 'react-admin';
 
@@ -673,11 +683,13 @@ const PostCreate = () => {
     );
 }
 ```
+
 {% endraw %}
 
 Use the `create` prop when you want a more polished or complex UI. For example a Material UI `<Dialog>` asking for multiple fields because the choices are from a referenced resource.
 
 {% raw %}
+
 ```jsx
 import {
     Create,
@@ -744,6 +756,7 @@ const CreateCategory = () => {
     );
 };
 ```
+
 {% endraw %}
 
 ## Tree Structure

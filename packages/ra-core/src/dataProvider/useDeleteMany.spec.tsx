@@ -113,12 +113,10 @@ describe('useDeleteMany', () => {
             expect(screen.queryByText('World')).not.toBeNull();
             expect(screen.queryByText('mutating')).not.toBeNull();
         });
-        await waitFor(() => {
-            expect(screen.queryByText('success')).not.toBeNull();
-            expect(screen.queryByText('Hello')).toBeNull();
-            expect(screen.queryByText('World')).not.toBeNull();
-            expect(screen.queryByText('mutating')).toBeNull();
-        });
+        await screen.findByText('success');
+        await screen.findByText('World');
+        expect(screen.queryByText('Hello')).toBeNull();
+        await waitFor(() => expect(screen.queryByText('mutating')).toBeNull());
 
         expect(dataProvider.deleteMany).toHaveBeenCalledWith('posts', {
             ids: [1],
@@ -147,6 +145,33 @@ describe('useDeleteMany', () => {
             expect(dataProvider.deleteMany).toHaveBeenCalledWith('foo', {
                 ids: [3, 4],
             });
+        });
+    });
+
+    it('calls onSettled when provided in hook time options', async () => {
+        const dataProvider = testDataProvider({
+            deleteMany: jest.fn(() => Promise.resolve({ data: [1, 2] } as any)),
+        });
+        let localDeleteMany;
+        const onSettled = jest.fn();
+        const Dummy = () => {
+            const [deleteMany] = useDeleteMany(
+                'foo',
+                { ids: [1, 2] },
+                { onSettled }
+            );
+            localDeleteMany = deleteMany;
+            return <span />;
+        };
+
+        render(
+            <CoreAdminContext dataProvider={dataProvider}>
+                <Dummy />
+            </CoreAdminContext>
+        );
+        localDeleteMany('foo', { ids: [3, 4] });
+        await waitFor(() => {
+            expect(onSettled).toHaveBeenCalled();
         });
     });
 

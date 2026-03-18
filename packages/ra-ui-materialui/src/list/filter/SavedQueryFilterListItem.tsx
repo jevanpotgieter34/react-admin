@@ -1,23 +1,18 @@
 import * as React from 'react';
-import { type ReactElement, memo } from 'react';
+import { memo } from 'react';
 import {
     IconButton,
     ListItem,
     ListItemButton,
     type ListItemProps,
     ListItemText,
-    ListItemSecondaryAction,
     styled,
     type ComponentsOverrides,
     useThemeProps,
 } from '@mui/material';
 import CancelIcon from '@mui/icons-material/CancelOutlined';
 import isEqual from 'lodash/isEqual.js';
-import { useNavigate } from 'react-router-dom';
-import { stringify } from 'query-string';
-import { useListContext } from 'ra-core';
-
-import { SavedQuery } from './useSavedQueries';
+import { useListContext, SavedQuery } from 'ra-core';
 
 const arePropsEqual = (
     prevProps: SavedQueryFilterListItemProps,
@@ -27,15 +22,20 @@ const arePropsEqual = (
     isEqual(prevProps.value, nextProps.value);
 
 export const SavedQueryFilterListItem = memo(
-    (inProps: SavedQueryFilterListItemProps): ReactElement => {
+    (inProps: SavedQueryFilterListItemProps) => {
         const props = useThemeProps({
             props: inProps,
             name: PREFIX,
         });
         const { className, label, sx, value } = props;
-        const { filterValues, sort, perPage, displayedFilters } =
-            useListContext();
-        const navigate = useNavigate();
+        const {
+            filterValues,
+            sort,
+            perPage,
+            displayedFilters,
+            setFilters,
+            setPage,
+        } = useListContext();
 
         const isSelected = isEqual(value, {
             filter: filterValues,
@@ -45,48 +45,41 @@ export const SavedQueryFilterListItem = memo(
         });
 
         const addFilter = (): void => {
-            navigate({
-                search: stringify({
-                    filter: JSON.stringify(value.filter),
-                    sort: value.sort?.field,
-                    order: value.sort?.order,
-                    page: 1,
-                    perPage: value.perPage ?? perPage,
-                    displayedFilters: JSON.stringify(value.displayedFilters),
-                }),
-            });
+            setFilters(value.filter, value.displayedFilters);
+            setPage(1);
         };
 
         const removeFilter = (): void => {
-            navigate({
-                search: stringify({
-                    filter: JSON.stringify({}),
-                }),
-            });
+            setFilters({}, {});
+            setPage(1);
         };
 
         const toggleFilter = (): void =>
             isSelected ? removeFilter() : addFilter();
 
         return (
-            <StyledListItem className={className} sx={sx} disablePadding>
+            <StyledListItem
+                className={className}
+                sx={sx}
+                disablePadding
+                disableGutters
+                secondaryAction={
+                    isSelected ? (
+                        <IconButton size="small" onClick={toggleFilter}>
+                            <CancelIcon />
+                        </IconButton>
+                    ) : null
+                }
+            >
                 <ListItemButton
                     onClick={toggleFilter}
                     selected={isSelected}
-                    disableGutters
                     className={SavedQueryFilterListItemClasses.listItemButton}
                 >
                     <ListItemText
                         primary={label}
                         className={SavedQueryFilterListItemClasses.listItemText}
                     />
-                    {isSelected && (
-                        <ListItemSecondaryAction>
-                            <IconButton size="small" onClick={toggleFilter}>
-                                <CancelIcon />
-                            </IconButton>
-                        </ListItemSecondaryAction>
-                    )}
                 </ListItemButton>
             </StyledListItem>
         );

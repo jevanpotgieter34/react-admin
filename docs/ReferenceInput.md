@@ -6,13 +6,13 @@ storybook_path: ra-ui-materialui-input-referenceinput--basic
 
 # `<ReferenceInput>`
 
-Use `<ReferenceInput>` for foreign-key values, for instance, to edit the `company_id` of a `contact` resource. 
+Use `<ReferenceInput>` for foreign-key values, for instance, to edit the `company_id` of a `contact` resource.
 
-<iframe src="https://www.youtube-nocookie.com/embed/LcycR3gB0qs" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen style="aspect-ratio: 16 / 9;width:100%;margin-bottom:1em;"></iframe>
+<iframe src="https://www.youtube-nocookie.com/embed/LcycR3gB0qs" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen style="aspect-ratio: 16 / 9;width:100%;margin-bottom:1em;" referrerpolicy="strict-origin-when-cross-origin"></iframe>
 
 ## Usage
 
-For instance, a contact record has a `company_id` field, which is a foreign key to a company record. 
+For instance, a contact record has a `company_id` field, which is a foreign key to a company record.
 
 ```
 ┌──────────────┐       ┌────────────┐
@@ -114,7 +114,7 @@ See the [`children`](#children) section for more details.
 | `queryOptions`     | Optional | [`UseQueryOptions`](https://tanstack.com/query/v5/docs/react/reference/useQuery)                       | `{}`                             | `react-query` client options                                                                   |
 | `sort`             | Optional | `{ field: String, order: 'ASC' or 'DESC' }` | `{ field:'id', order:'DESC' }` | How to order the list of suggestions                                                           |
 
-**Note**: `<ReferenceInput>` doesn't accept the [common input props](./Inputs.md#common-input-props) (like `label`) ; it is the responsibility of the child component to apply them.
+**Note**: `<ReferenceInput>` doesn't accept the [common input props](./Inputs.md#common-input-props) (like `label`) ; it is the responsibility of the child component to apply them. The same goes for validation: pass `validate` to the child input (`<AutocompleteInput>`, `<SelectInput>`, `<RadioButtonGroupInput>`, etc.), not to `<ReferenceInput>`. This also applies to other reference inputs like [`<ReferenceArrayInput>`](./ReferenceArrayInput.md).
 
 ## `children`
 
@@ -142,6 +142,24 @@ import { ReferenceInput, SelectInput } from 'react-admin';
 </ReferenceInput>
 ```
 
+If your users need to compare multiple fields before selecting a record, you can use [`<DataTableInput>`](./DataTableInput.md):
+
+```jsx
+import { DataTableInput } from '@react-admin/ra-form-layout';
+import { DataTable, ReferenceInput } from 'react-admin';
+
+<ReferenceInput source="company_id" reference="companies">
+    <DataTableInput>
+        <DataTable.Col source="company_name" />
+        <DataTable.Col source="country" />
+        <DataTable.Col source="city" />
+        <DataTable.Col source="industry" />
+    </DataTableInput>
+</ReferenceInput>
+```
+
+![DataTableInput in ReferenceInput](./img/reference-input-datatable-input-dialog.png)
+
 You can even use a component of your own as child, provided it detects a `ChoicesContext` is available and gets their choices from it.
 
 The choices context value can be accessed with the [`useChoicesContext`](./useChoicesContext.md) hook.
@@ -163,9 +181,11 @@ You can make the `getList()` call lazy by using the `enableGetChoices` prop. Thi
 You can filter the query used to populate the possible values. Use the `filter` prop for that.
 
 {% raw %}
+
 ```jsx
 <ReferenceInput source="company_id" reference="companies" filter={{ is_published: true }} />
 ```
+
 {% endraw %}
 
 **Note**: When users type a search term in the `<AutocompleteInput>`, this doesn't affect the `filter` prop. Check the [Customizing the filter query](#customizing-the-filter-query) section below for details on how that filter works.
@@ -214,7 +234,7 @@ You can pass either a React element or a string to the `offline` prop:
 
 ## `parse`
 
-By default, children of `<ReferenceInput>` transform the empty form value (an empty string) into `null` before passing it to the `dataProvider`. 
+By default, children of `<ReferenceInput>` transform the empty form value (an empty string) into `null` before passing it to the `dataProvider`.
 
 If you want to change this behavior, you have to pass a custom `parse` prop to the `<ReferenceInput>` *child component*, because  **`<ReferenceInput>` doesn't have a `parse` prop**. It is the responsibility of the child component to parse the input value.
 
@@ -279,6 +299,7 @@ Use the `queryOptions` prop to pass options to the `dataProvider.getList()` quer
 For instance, to pass [a custom `meta`](./Actions.md#meta-parameter):
 
 {% raw %}
+
 ```jsx
 <ReferenceInput 
     source="company_id"
@@ -286,15 +307,17 @@ For instance, to pass [a custom `meta`](./Actions.md#meta-parameter):
     queryOptions={{ meta: { foo: 'bar' } }}
 />
 ```
+
 {% endraw %}
 
 ## `sort`
 
-By default, `<ReferenceInput>` orders the possible values by `id` desc. 
+By default, `<ReferenceInput>` orders the possible values by `id` desc.
 
 You can change this order by setting the `sort` prop (an object with `field` and `order` properties).
 
 {% raw %}
+
 ```jsx
 <ReferenceInput
     source="company"
@@ -302,6 +325,7 @@ You can change this order by setting the `sort` prop (an object with `field` and
     sort={{ field: 'name', order: 'ASC' }}
 />
 ```
+
 {% endraw %}
 
 ## `source`
@@ -325,9 +349,21 @@ Then to display a selector for the contact company, you should call `<ReferenceI
 <ReferenceInput source="company_id" reference="companies" />
 ```
 
+## Validation
+
+`<ReferenceInput>` doesn't accept a `validate` prop. Put validation on the child input instead (`<AutocompleteInput>`, `<SelectInput>`, `<RadioButtonGroupInput>`, etc.).
+
+```jsx
+import { ReferenceInput, SelectInput, required } from 'react-admin';
+
+<ReferenceInput source="company_id" reference="companies">
+    <SelectInput validate={required()} />
+</ReferenceInput>
+```
+
 ## Transforming The Input Value
 
-By default, children of `<ReferenceInput>` transform `null` values from the `dataProvider` into empty strings. 
+By default, children of `<ReferenceInput>` transform `null` values from the `dataProvider` into empty strings.
 
 If you want to change this behavior, you have to pass a custom `format` prop to the `<ReferenceInput>` *child component*, because  `<ReferenceInput>` doesn't have a `format` prop. It is the responsibility of the child component to format the input value.
 
@@ -369,7 +405,7 @@ const filterToQuery = searchText => ({ name_ilike: `%${searchText}%` });
 
 When users don't find the reference they are looking for in the list of possible values, they need to create a new reference. If they have to quit the current form to create the reference, they may lose the data they have already entered. So a common feature for `<ReferenceInput>` is to let users create a new reference on the fly.
 
-<iframe src="https://www.youtube-nocookie.com/embed/CIUp5MF6A1M" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen style="aspect-ratio: 16 / 9;width:100%;margin-bottom:1em;"></iframe>
+<iframe src="https://www.youtube-nocookie.com/embed/CIUp5MF6A1M" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen style="aspect-ratio: 16 / 9;width:100%;margin-bottom:1em;" referrerpolicy="strict-origin-when-cross-origin"></iframe>
 
 Children of `<ReferenceInput>` (`<AutocompleteInput>`, `<SelectInput>`, etc.) allow the creation of new choices via the `onCreate` prop. This displays a new "Create new" option in the list of choices. You can leverage this capability to create a new reference record.
 
@@ -452,8 +488,7 @@ const ProductEdit = () => (
 );
 ```
 
-
-## Performance 
+## Performance
 
 Why does `<ReferenceInput>` use the `dataProvider.getMany()` method with a single value `[id]` instead of `dataProvider.getOne()` to fetch the record for the current value?
 

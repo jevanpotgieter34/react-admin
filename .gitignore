@@ -26,3 +26,5 @@ cypress/downloads
 !.yarn/versions
 .env
 .claude/settings.local.json
+.npmrc
+/packs

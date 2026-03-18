@@ -39,10 +39,10 @@ import { Toolbar } from './Toolbar';
  * );
  *
  * @typedef {Object} Props the props you can use (other props are injected by Create or Edit)
- * @prop {ReactElement[]} children Input elements
+ * @prop {ReactNode[]} children Input elements
  * @prop {Object} defaultValues
  * @prop {Function} validate
- * @prop {ReactElement} toolbar The element displayed at the bottom of the form, containing the SaveButton
+ * @prop {ReactNode} toolbar The element displayed at the bottom of the form, containing the SaveButton
  *
  * @param {Props} props
  */
@@ -76,8 +76,8 @@ export const SimpleForm = (inProps: SimpleFormProps) => {
     );
 };
 
-export interface SimpleFormProps
-    extends Omit<FormProps, 'render'>,
+export interface SimpleFormProps<RecordType = any>
+    extends Omit<FormProps<RecordType>, 'render'>,
         Omit<StackProps, 'onSubmit'> {
     children: ReactNode;
     className?: string;

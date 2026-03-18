@@ -1,5 +1,212 @@
 # Changelog
 
+## 5.14.4
+
+* Fix SavedQuery when `disableSyncWithLocation` is set ([#11173](https://github.com/marmelab/react-admin/pull/11173)) ([ThieryMichel](https://github.com/ThieryMichel))
+* Fix `RichTextInput` does not allow nesting unordered and ordered lists ([#11179](https://github.com/marmelab/react-admin/pull/11179)) ([frlruehle](https://github.com/frlruehle))
+* Fix compatibility with latest version of `@hookform/resolvers` ([#11186](https://github.com/marmelab/react-admin/pull/11186)) ([slax57](https://github.com/slax57))
+* [Doc] Use splat route for TanStack Start setup ([#11182](https://github.com/marmelab/react-admin/pull/11182)) ([WiXSL](https://github.com/WiXSL))
+* Fix security warnings due to outdated dependencies ([#11183](https://github.com/marmelab/react-admin/pull/11183)) ([ThieryMichel](https://github.com/ThieryMichel))
+* Bump js-yaml from 3.14.1 to 3.14.2 ([#11185](https://github.com/marmelab/react-admin/pull/11185)) ([dependabot[bot]](https://github.com/apps/dependabot))
+* Bump dompurify from 3.3.1 to 3.3.2 ([#11184](https://github.com/marmelab/react-admin/pull/11184)) ([dependabot[bot]](https://github.com/apps/dependabot))
+* Bump dompurify and @types/dompurify ([#11180](https://github.com/marmelab/react-admin/pull/11180)) ([dependabot[bot]](https://github.com/apps/dependabot))
+
+## 5.14.3
+
+* Add default empty component and i18n messages to `ListGuesser` ([#11165](https://github.com/marmelab/react-admin/pull/11165)) ([WiXSL](https://github.com/WiXSL))
+* Fix `<Edit>`, `<ReferenceField>` and `<List>` to better support offline mode ([#11161](https://github.com/marmelab/react-admin/pull/11161)) ([fzaninotto](https://github.com/fzaninotto))
+* [Doc] Add DataTableInput dedicated page and cross references ([#11162](https://github.com/marmelab/react-admin/pull/11162)) ([WiXSL](https://github.com/WiXSL))
+* [TypeScript] Fix withLifecycleCallback return type for augmented data providers ([#11170](https://github.com/marmelab/react-admin/pull/11170)) ([fzaninotto](https://github.com/fzaninotto))
+* [TypeScript] Fix ReferenceManyField queryOptions type doesn't support error and success callbacks ([#11166](https://github.com/marmelab/react-admin/pull/11166)) ([fzaninotto](https://github.com/fzaninotto))
+* Bump rollup from 2.79.2 to 2.80.0 ([#11175](https://github.com/marmelab/react-admin/pull/11175)) ([dependabot[bot]](https://github.com/apps/dependabot))
+* Bump storybook from 8.6.15 to 8.6.17 ([#11174](https://github.com/marmelab/react-admin/pull/11174)) ([dependabot[bot]](https://github.com/apps/dependabot))
+* Bump devalue from 5.6.2 to 5.6.3 ([#11168](https://github.com/marmelab/react-admin/pull/11168)) ([dependabot[bot]](https://github.com/apps/dependabot))
+* Bump systeminformation from 5.29.1 to 5.31.1 ([#11167](https://github.com/marmelab/react-admin/pull/11167)) ([dependabot[bot]](https://github.com/apps/dependabot))
+
+## 5.14.2
+
+* Fix `<ReferenceFieldBase>` does not work offline ([#11163](https://github.com/marmelab/react-admin/pull/11163)) ([fzaninotto](https://github.com/fzaninotto))
+* Fix `<Confirm>` button hover background transparency when type is warning ([#11160](https://github.com/marmelab/react-admin/pull/11160)) ([mjsarfatti](https://github.com/mjsarfatti))
+* [Doc] Update AutoPersistInStoreBase documentation ([#11159](https://github.com/marmelab/react-admin/pull/11159)) ([jonathanarnault](https://github.com/jonathanarnault))
+* [Doc] Add react-admin Skill and AI coding assistant instructions ([#11158](https://github.com/marmelab/react-admin/pull/11158)) ([fzaninotto](https://github.com/fzaninotto))
+* [Doc] Update `<AutoPersistInStore>` documentation to mention cache eviction ([#11157](https://github.com/marmelab/react-admin/pull/11157)) ([slax57](https://github.com/slax57))
+* [Doc] Offline Support Documentation ([#11152](https://github.com/marmelab/react-admin/pull/11152)) ([djhi](https://github.com/djhi))
+* [Doc]: Add TanStack Start section ([#11151](https://github.com/marmelab/react-admin/pull/11151)) ([WiXSL](https://github.com/WiXSL))
+* [Doc] Update RA Core EE documentation ([#11148](https://github.com/marmelab/react-admin/pull/11148)) ([jonathanarnault](https://github.com/jonathanarnault))
+* [Doc] Add Spring Boot (REST) data provider to `DataProviderList.md` ([#11141](https://github.com/marmelab/react-admin/pull/11141)) ([femrek](https://github.com/femrek))
+* [TypeScript] Add generic type parameters to `getSimpleValidationResolver` ([#11150](https://github.com/marmelab/react-admin/pull/11150)) ([Gabriel-Malenowitch](https://github.com/Gabriel-Malenowitch))
+* [Demo] Fix vite configuration for tutorial example ([#11154](https://github.com/marmelab/react-admin/pull/11154)) ([Madeorsk](https://github.com/Madeorsk))
+* [chore] Upgrade to vite 7 ([#11153](https://github.com/marmelab/react-admin/pull/11153)) ([WiXSL](https://github.com/WiXSL))
+* Bump qs from 6.14.1 to 6.14.2 ([#11164](https://github.com/marmelab/react-admin/pull/11164)) ([dependabot[bot]](https://github.com/apps/dependabot))
+* Bump webpack from 5.94.0 to 5.105.0 ([#11155](https://github.com/marmelab/react-admin/pull/11155)) ([dependabot[bot]](https://github.com/apps/dependabot))
+
+## 5.14.1
+
+* Fix `onSettled` call when provided in hook time options ([#11139](https://github.com/marmelab/react-admin/pull/11139)) ([Madeorsk](https://github.com/Madeorsk))
+* Fix `CustomRoutes` with TanStack Router ([#11138](https://github.com/marmelab/react-admin/pull/11138)) ([Madeorsk](https://github.com/Madeorsk))
+* Fix `ColumnsButton` allows dragging column below the Reset button ([#11140](https://github.com/marmelab/react-admin/pull/11140)) ([Madeorsk](https://github.com/Madeorsk))
+* [TypeScript] Fix  `ref` type regression when wrapping react-admin Button components ([#11135](https://github.com/marmelab/react-admin/pull/11135)) ([WiXSL](https://github.com/WiXSL))
+* [chore] Compile packages for es2020 instead of es5 ([#11136](https://github.com/marmelab/react-admin/pull/11136)) ([djhi](https://github.com/djhi))
+
+## 5.14.0
+
+* Add router abstraction and TanStack Router adapter ([#11102](https://github.com/marmelab/react-admin/pull/11102)) ([fzaninotto](https://github.com/fzaninotto))
+* Add ability to use `<ExportButton>` in every list ([#11119](https://github.com/marmelab/react-admin/pull/11119)) ([WiXSL](https://github.com/WiXSL))
+* Add `forwardRef` to react-admin buttons to support tooltips ([#11122](https://github.com/marmelab/react-admin/pull/11122)) ([WiXSL](https://github.com/WiXSL))
+* Add ability to disable auto focus in the first input of newly added rows with `<SimpleFormIterator disableAutoFocus>` ([#11101](https://github.com/marmelab/react-admin/pull/11101)) ([AarishMansur](https://github.com/AarishMansur))
+* Add `Store.listItems` method ([#11096](https://github.com/marmelab/react-admin/pull/11096)) ([djhi](https://github.com/djhi))
+* Add `useSupportCreateSuggestions` primitives to ra-core ([#11094](https://github.com/marmelab/react-admin/pull/11094)) ([slax57](https://github.com/slax57))
+* Add `genericMemo` to `ra-core` ([#11093](https://github.com/marmelab/react-admin/pull/11093)) ([slax57](https://github.com/slax57))
+* Add `useSavedQueries` primitives to `ra-core` ([#11092](https://github.com/marmelab/react-admin/pull/11092)) ([slax57](https://github.com/slax57))
+* Fix `ColumnsSelector` search input should stay fixed above menu list ([#11114](https://github.com/marmelab/react-admin/pull/11114)) ([WiXSL](https://github.com/WiXSL))
+* [Doc] Fix Inputs doc code example ([#11125](https://github.com/marmelab/react-admin/pull/11125)) ([gartner](https://github.com/gartner))
+* [Doc] Add `deleteMany` method to README and source code docs for json-server Data Provider ([#11118](https://github.com/marmelab/react-admin/pull/11118)) ([femrek](https://github.com/femrek))
+* [Chore] Update Cypress ([#11127](https://github.com/marmelab/react-admin/pull/11127)) ([fzaninotto](https://github.com/fzaninotto))
+* [chore] Stabilize flaky tests ([#11121](https://github.com/marmelab/react-admin/pull/11121)) ([WiXSL](https://github.com/WiXSL))
+* Bump lodash from 4.17.21 to 4.17.23 ([#11129](https://github.com/marmelab/react-admin/pull/11129)) ([dependabot[bot]](https://github.com/apps/dependabot))
+* Bump lodash-es from 4.17.21 to 4.17.23 ([#11128](https://github.com/marmelab/react-admin/pull/11128)) ([dependabot[bot]](https://github.com/apps/dependabot))
+* Bump diff from 5.2.0 to 5.2.2 ([#11126](https://github.com/marmelab/react-admin/pull/11126)) ([dependabot[bot]](https://github.com/apps/dependabot))
+
+## 5.13.6
+
+* [Doc] Update link to marmelab blog ([#11117](https://github.com/marmelab/react-admin/pull/11117)) ([WiXSL](https://github.com/WiXSL))
+* [Doc] Update `<AutoPersistInStore>` documentation ([#11110](https://github.com/marmelab/react-admin/pull/11110)) ([djhi](https://github.com/djhi))
+* [Doc] Update Soft Delete headless documentation ([#11109](https://github.com/marmelab/react-admin/pull/11109)) ([jonathanarnault](https://github.com/jonathanarnault))
+* [Doc] Fix `Validation` section position ([#11107](https://github.com/marmelab/react-admin/pull/11107)) ([WiXSL](https://github.com/WiXSL))
+* Bump h3 from 1.15.4 to 1.15.5 ([#11116](https://github.com/marmelab/react-admin/pull/11116)) ([dependabot[bot]](https://github.com/apps/dependabot))
+* Bump devalue from 5.5.0 to 5.6.2 ([#11115](https://github.com/marmelab/react-admin/pull/11115)) ([dependabot[bot]](https://github.com/apps/dependabot))
+
+## 5.13.5
+
+* Fix `<Form>` ignores `resetOptions` when record changes ([#11099](https://github.com/marmelab/react-admin/pull/11099)) ([Jszigeti](https://github.com/Jszigeti))
+* Fix `<ColumnsSelector>` cannot hide `<DataTable.Col>` items with no `source` ([#11088](https://github.com/marmelab/react-admin/pull/11088)) ([fzaninotto](https://github.com/fzaninotto))
+* [Doc] Clarify validation prop usage on `<ReferenceInput>` / `<ReferenceArrayInput>` ([#11104](https://github.com/marmelab/react-admin/pull/11104)) ([WiXSL](https://github.com/WiXSL))
+* [Doc] Add tutorial for React Router Framework ([#11100](https://github.com/marmelab/react-admin/pull/11100)) ([djhi](https://github.com/djhi))
+* [Doc] Update `<DatagridAG>` docs following `ra-datagrid-ag` 7.0.0 release ([#11097](https://github.com/marmelab/react-admin/pull/11097)) ([slax57](https://github.com/slax57))
+* [Doc] Update `AdapterDateFns` imports for MUIX v8 ([#11090](https://github.com/marmelab/react-admin/pull/11090)) ([djhi](https://github.com/djhi))
+* [Doc] Document `<FilterValue>` ([#11086](https://github.com/marmelab/react-admin/pull/11086)) ([djhi](https://github.com/djhi))
+* [chore] Fix security vulnerabilities in `qs` and `systeminformation` ([#11103](https://github.com/marmelab/react-admin/pull/11103)) ([slax57](https://github.com/slax57))
+* Bump react-router from 6.28.1 to 6.30.2 ([#11106](https://github.com/marmelab/react-admin/pull/11106)) ([dependabot[bot]](https://github.com/apps/dependabot))
+* Bump storybook from 8.6.11 to 8.6.15 ([#11098](https://github.com/marmelab/react-admin/pull/11098)) ([dependabot[bot]](https://github.com/apps/dependabot))
+
+## 5.13.4
+
+* Fix `useAugmentedForm` resets the form one too many time ([#11085](https://github.com/marmelab/react-admin/pull/11085)) ([slax57](https://github.com/slax57))
+* Fix `<BulkDeleteWithConfirmButton>`: prevent `mutationOptions` from being passed to DOM ([#11077](https://github.com/marmelab/react-admin/pull/11077)) ([devserkan](https://github.com/devserkan))
+* Fix regression in `memoryStore` ([#11075](https://github.com/marmelab/react-admin/pull/11075)) ([djhi](https://github.com/djhi))
+* [Doc] Update RA Core EE documentation ([#11078](https://github.com/marmelab/react-admin/pull/11078)) ([jonathanarnault](https://github.com/jonathanarnault))
+* [Doc] Fix `<ReferenceOneField>` doc incorrectly mentions one of `children` or `render` is required ([#11072](https://github.com/marmelab/react-admin/pull/11072)) ([slax57](https://github.com/slax57))
+* Bump @tiptap/extension-link from 2.0.3 to 2.10.4 ([#11074](https://github.com/marmelab/react-admin/pull/11074)) ([dependabot[bot]](https://github.com/apps/dependabot))
+
+## 5.13.3
+
+* Replace deprecated `<ListItemSecondaryAction>` component by `secondaryAction` prop ([#11033](https://github.com/marmelab/react-admin/pull/11033)) ([smeng9](https://github.com/smeng9))
+* Fix `memoryStore` does not support nested-looking keys ([#11070](https://github.com/marmelab/react-admin/pull/11070)) ([slax57](https://github.com/slax57))
+* Fix `<Datagrid>` does not show the correct number of selected items ([#11069](https://github.com/marmelab/react-admin/pull/11069)) ([djhi](https://github.com/djhi))
+* Fix values from location are not applied on Forms ([#11067](https://github.com/marmelab/react-admin/pull/11067)) ([djhi](https://github.com/djhi))
+
+## 5.13.2
+
+* Fix `<SelectAllButton>` ignores the `storeKey` ([#11060](https://github.com/marmelab/react-admin/pull/11060)) ([slax57](https://github.com/slax57))
+* Fix package exports ([#11059](https://github.com/marmelab/react-admin/pull/11059)) ([djhi](https://github.com/djhi))
+* Fix `<DataTable>` may duplicate ids in its selection state ([#11047](https://github.com/marmelab/react-admin/pull/11047)) ([Jszigeti](https://github.com/Jszigeti))
+* [Doc] Update `<ReferenceManyInputBase>` props table ([#11055](https://github.com/marmelab/react-admin/pull/11055)) ([jonathanarnault](https://github.com/jonathanarnault))
+* [Doc] Fix Youtube integrations ([#11053](https://github.com/marmelab/react-admin/pull/11053)) ([slax57](https://github.com/slax57))
+* [Doc] Fix headless FormDataConsumer doc still references react-admin, and mention SimpleFormIteratorBase ([#11050](https://github.com/marmelab/react-admin/pull/11050)) ([slax57](https://github.com/slax57))
+* [Doc] Update RA Core EE documentation ([#11037](https://github.com/marmelab/react-admin/pull/11037)) ([jonathanarnault](https://github.com/jonathanarnault))
+* [TypeScript] Fix usage of `ReactElement` when it should be `ReactNode` ([#11046](https://github.com/marmelab/react-admin/pull/11046)) ([djhi](https://github.com/djhi))
+* [website] Remove banner to announce Shadcn Admin Kit - master ([#11048](https://github.com/marmelab/react-admin/pull/11048)) ([slax57](https://github.com/slax57))
+* [chore] Bump astro from 5.15.6 to 5.15.9 ([#11057](https://github.com/marmelab/react-admin/pull/11057)) ([dependabot[bot]](https://github.com/apps/dependabot))
+* [chore] Stabilize flaky unit tests ([#11056](https://github.com/marmelab/react-admin/pull/11056)) ([djhi](https://github.com/djhi))
+
+## 5.13.1
+
+* Fix imports from directory ([#11039](https://github.com/marmelab/react-admin/pull/11039)) ([djhi](https://github.com/djhi))
+* Fix `<ReferenceFieldBase>` considers zero-index reference as empty ([#11042](https://github.com/marmelab/react-admin/pull/11042)) ([fzaninotto](https://github.com/fzaninotto))
+* [Storybook] Fix `<ArrayInputBase>` story issue when adding back a removed item ([#11041](https://github.com/marmelab/react-admin/pull/11041)) ([djhi](https://github.com/djhi))
+* [Storybook] Fix `<SaveButton>` Dirty story ([#11040](https://github.com/marmelab/react-admin/pull/11040)) ([djhi](https://github.com/djhi))
+* Bump astro from 5.15.3 to 5.15.6 ([#11043](https://github.com/marmelab/react-admin/pull/11043)) ([dependabot[bot]](https://github.com/apps/dependabot))
+* [chore] Fix release script copies invalid node_modules subfolder ([#11038](https://github.com/marmelab/react-admin/pull/11038)) ([slax57](https://github.com/slax57))
+
+## 5.13.0
+
+* Introduce `<ArrayInputBase>`, `<SimpleFomIteratorBase>` and `<SimpleFormIteratorItemBase>` ([#10955](https://github.com/marmelab/react-admin/pull/10955)) ([djhi](https://github.com/djhi))
+* Introduce separate selection states for lists with distinct `storeKey` ([#10953](https://github.com/marmelab/react-admin/pull/10953)) ([mikhail-fedosenko](https://github.com/mikhail-fedosenko))
+* Speed up ArrayInput ([#10926](https://github.com/marmelab/react-admin/pull/10926)) ([fzaninotto](https://github.com/fzaninotto))
+* Improve packages exports ([#10995](https://github.com/marmelab/react-admin/pull/10995)) ([djhi](https://github.com/djhi))
+* Export guessers views ([#10981](https://github.com/marmelab/react-admin/pull/10981)) ([djhi](https://github.com/djhi))
+* Add empty property to ListBase and InfiniteListBase ([#10940](https://github.com/marmelab/react-admin/pull/10940)) ([Madeorsk](https://github.com/Madeorsk))
+* Fix `useExpanded` does not have a stable `defaultValue` ([#11028](https://github.com/marmelab/react-admin/pull/11028)) ([djhi](https://github.com/djhi))
+* [Doc] Explain how to set up Jest for RA 5.13 ([#11036](https://github.com/marmelab/react-admin/pull/11036)) ([slax57](https://github.com/slax57))
+* [Doc] Fix data provider options in Create React Admin documentation ([#11032](https://github.com/marmelab/react-admin/pull/11032)) ([slax57](https://github.com/slax57))
+* [Doc] Update README to use React 18 createRoot API ([#11031](https://github.com/marmelab/react-admin/pull/11031)) ([hamed-zeidabadi](https://github.com/hamed-zeidabadi))
+* [Doc] Update RA Core EE documentation ([#11023](https://github.com/marmelab/react-admin/pull/11023)) ([jonathanarnault](https://github.com/jonathanarnault))
+* [Doc] Fix `<LockOnMount>` invalid example ([#11019](https://github.com/marmelab/react-admin/pull/11019)) ([djhi](https://github.com/djhi))
+* [Doc] Fix incorrect documentation of EditInDialogButton ([#10943](https://github.com/marmelab/react-admin/pull/10943)) ([Madeorsk](https://github.com/Madeorsk))
+* [TypeScript] Fix usage of `ReactElement` when it should be `ReactNode` ([#11030](https://github.com/marmelab/react-admin/pull/11030)) ([djhi](https://github.com/djhi))
+* [Demo] Update lists to allow sorting by reference ([#11021](https://github.com/marmelab/react-admin/pull/11021)) ([fzaninotto](https://github.com/fzaninotto))
+* [Storybook] Fix array input stories ([#11002](https://github.com/marmelab/react-admin/pull/11002)) ([djhi](https://github.com/djhi))
+* [chore] Update `ra-core` Test UI ([#11020](https://github.com/marmelab/react-admin/pull/11020)) ([djhi](https://github.com/djhi))
+* [Chore]: Update react-admin to use ReactNode instead of ReactElement where applicable ([#10996](https://github.com/marmelab/react-admin/pull/10996)) ([jonathanarnault](https://github.com/jonathanarnault))
+* Bump min-document from 2.19.0 to 2.19.1 ([#11029](https://github.com/marmelab/react-admin/pull/11029)) ([dependabot[bot]](https://github.com/apps/dependabot))
+* Bump vite from 6.3.6 to 6.4.1 ([#11026](https://github.com/marmelab/react-admin/pull/11026)) ([dependabot[bot]](https://github.com/apps/dependabot))
+* Bump astro from 5.13.7 to 5.14.3 ([#11025](https://github.com/marmelab/react-admin/pull/11025)) ([dependabot[bot]](https://github.com/apps/dependabot))
+
+### React-hook-form version bump
+
+This release bumps the minimum required version of `react-hook-form` to `7.65.0`.
+
+### Jest configuration update
+
+This release changed the way react-admin exports its modules to be fully compatible with ESM (PR [#10995](https://github.com/marmelab/react-admin/pull/10995)). This may require you to update your Jest configuration if you are using Jest in CJS mode (the default).
+
+See https://marmelab.com/react-admin/UnitTesting.html#working-with-jest for more details.
+
+### Webpack configuration update
+
+If you use MUI v5 or MUI v6, you may need to update your Webpack config by adding the following rules:
+
+```js
+{
+    // Your config
+    modules: {
+        rules: [
+            // Your other rules
+            {
+                test: /\.m?js/,
+                type: "javascript/auto",
+            },
+            {
+                test: /\.m?js/,
+                resolve: {
+                fullySpecified: false,
+                },
+            },
+        ]
+    }
+}
+```
+
+### Vite configuration update
+
+If you use MUI v5, you may have to add the following alias:
+
+```js
+export default defineConfig(({ mode }) => ({
+    // Your config
+    resolve: {
+        // Your resolve config
+        alias: [
+            // Your other aliases
+            {
+                find: /^@mui\/icons-material\/(.*)/,
+                replacement: "@mui/icons-material/esm/$1",
+            },
+        ]
+    }
+});
+```
+
 ## 5.12.3
 
 * Fix optimistic query invalidation and avoid invalidating the same query twice ([#11017](https://github.com/marmelab/react-admin/pull/11017)) ([slax57](https://github.com/slax57))

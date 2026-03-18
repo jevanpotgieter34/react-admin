@@ -120,6 +120,129 @@ describe('Form', () => {
         expect(screen.getByText('isDirty: false')).not.toBeNull();
     });
 
+    it('should keep dirty values when record changes and resetOptions.keepDirtyValues is true', async () => {
+        const { rerender } = render(
+            <CoreAdminContext>
+                <Form
+                    onSubmit={jest.fn()}
+                    record={{ id: 1, name: 'Initial' }}
+                    resetOptions={{ keepDirtyValues: true }}
+                >
+                    <Input source="name" />
+                </Form>
+            </CoreAdminContext>
+        );
+
+        expect(screen.getByDisplayValue('Initial')).not.toBeNull();
+
+        fireEvent.change(screen.getByLabelText('name'), {
+            target: { value: 'User Modified' },
+        });
+
+        await waitFor(() => {
+            expect(screen.getByDisplayValue('User Modified')).not.toBeNull();
+        });
+
+        rerender(
+            <CoreAdminContext>
+                <Form
+                    onSubmit={jest.fn()}
+                    record={{
+                        id: 1,
+                        name: 'Server Updated',
+                        otherField: 'new value',
+                    }}
+                    resetOptions={{ keepDirtyValues: true }}
+                >
+                    <Input source="name" />
+                </Form>
+            </CoreAdminContext>
+        );
+
+        await waitFor(() => {
+            expect(screen.getByDisplayValue('User Modified')).not.toBeNull();
+        });
+        expect(screen.queryByDisplayValue('Server Updated')).toBeNull();
+    });
+
+    it('should NOT keep dirty values when record changes and resetOptions.keepDirtyValues is false', async () => {
+        const { rerender } = render(
+            <CoreAdminContext>
+                <Form onSubmit={jest.fn()} record={{ id: 1, name: 'Initial' }}>
+                    <Input source="name" />
+                </Form>
+            </CoreAdminContext>
+        );
+
+        fireEvent.change(screen.getByLabelText('name'), {
+            target: { value: 'User Modified' },
+        });
+
+        await waitFor(() => {
+            expect(screen.getByDisplayValue('User Modified')).not.toBeNull();
+        });
+
+        rerender(
+            <CoreAdminContext>
+                <Form
+                    onSubmit={jest.fn()}
+                    record={{
+                        id: 1,
+                        name: 'Server Updated',
+                    }}
+                >
+                    <Input source="name" />
+                </Form>
+            </CoreAdminContext>
+        );
+
+        await waitFor(() => {
+            expect(screen.getByDisplayValue('Server Updated')).not.toBeNull();
+        });
+        expect(screen.queryByDisplayValue('User Modified')).toBeNull();
+    });
+
+    it('should NOT keep dirty values when switching to a different record even with resetOptions.keepDirtyValues', async () => {
+        const { rerender } = render(
+            <CoreAdminContext>
+                <Form
+                    onSubmit={jest.fn()}
+                    record={{ id: 1, name: 'Record 1' }}
+                    resetOptions={{ keepDirtyValues: true }}
+                >
+                    <Input source="name" />
+                </Form>
+            </CoreAdminContext>
+        );
+
+        fireEvent.change(screen.getByLabelText('name'), {
+            target: { value: 'User Modified Record 1' },
+        });
+
+        await waitFor(() => {
+            expect(
+                screen.getByDisplayValue('User Modified Record 1')
+            ).not.toBeNull();
+        });
+
+        rerender(
+            <CoreAdminContext>
+                <Form
+                    onSubmit={jest.fn()}
+                    record={{ id: 2, name: 'Record 2' }}
+                    resetOptions={{ keepDirtyValues: true }}
+                >
+                    <Input source="name" />
+                </Form>
+            </CoreAdminContext>
+        );
+
+        await waitFor(() => {
+            expect(screen.getByDisplayValue('Record 2')).not.toBeNull();
+        });
+        expect(screen.queryByDisplayValue('User Modified Record 1')).toBeNull();
+    });
+
     it('should update Form state on submit', async () => {
         let isSubmitting;
 
@@ -748,7 +871,9 @@ describe('Form', () => {
         const translate = jest.spyOn(i18nProvider, 'translate');
         render(<ZodResolver i18nProvider={i18nProvider} />);
         fireEvent.click(screen.getByText('Submit'));
-        await screen.findByText('Required');
+        await screen.findByText(
+            'Invalid input: expected string, received undefined'
+        );
         await screen.findByText('This field is required');
         await screen.findByText('This field must be provided');
         await screen.findByText('app.validation.missing');

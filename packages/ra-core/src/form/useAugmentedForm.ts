@@ -43,6 +43,7 @@ export const useAugmentedForm = <RecordType = any>(
         defaultValues,
         formRootPathname,
         resolver,
+        resetOptions,
         reValidateMode = 'onChange',
         onSubmit,
         sanitizeEmptyValues,
@@ -83,11 +84,20 @@ export const useAugmentedForm = <RecordType = any>(
     });
 
     const formRef = useRef(form);
-    const { reset } = form;
+    const { reset, formState } = form;
+    const { isReady } = formState;
+
+    const previousRecordId = useRef(record?.id);
 
     useEffect(() => {
-        reset(defaultValuesIncludingRecord);
-    }, [defaultValuesIncludingRecord, reset]);
+        const recordIdChanged = record?.id !== previousRecordId.current;
+        previousRecordId.current = record?.id;
+
+        reset(
+            defaultValuesIncludingRecord,
+            recordIdChanged ? undefined : resetOptions
+        );
+    }, [defaultValuesIncludingRecord, reset, resetOptions, record?.id]);
 
     // notify on invalid form
     useNotifyIsFormInvalid(form.control, !disableInvalidFormNotification);
@@ -95,13 +105,14 @@ export const useAugmentedForm = <RecordType = any>(
     const recordFromLocation = useRecordFromLocation();
     const recordFromLocationApplied = useRef(false);
     useEffect(() => {
+        if (!isReady) return;
         if (recordFromLocation && !recordFromLocationApplied.current) {
             reset(merge({}, defaultValuesIncludingRecord, recordFromLocation), {
                 keepDefaultValues: true,
             });
             recordFromLocationApplied.current = true;
         }
-    }, [defaultValuesIncludingRecord, recordFromLocation, reset]);
+    }, [defaultValuesIncludingRecord, recordFromLocation, reset, isReady]);
 
     // submit callbacks
     const handleSubmit = useCallback(
@@ -144,7 +155,12 @@ export const useAugmentedForm = <RecordType = any>(
 
 export type UseAugmentedFormProps<RecordType = any> =
     UseFormOwnProps<RecordType> &
-        Omit<UseFormProps, 'onSubmit'> & {
+        Omit<
+            UseFormProps<
+                RecordType extends FieldValues ? RecordType : FieldValues
+            >,
+            'onSubmit'
+        > & {
             validate?: ValidateForm;
         };
 

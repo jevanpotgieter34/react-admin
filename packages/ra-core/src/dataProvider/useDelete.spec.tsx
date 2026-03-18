@@ -122,8 +122,33 @@ describe('useDelete', () => {
     });
 
     it('uses the latest declaration time mutationMode', async () => {
+        const posts = [
+            { id: 1, title: 'Hello' },
+            { id: 2, title: 'World' },
+        ];
+        let resolveDelete: (() => void) | undefined;
+        const dataProvider = {
+            getList: () =>
+                Promise.resolve({
+                    data: posts,
+                    total: posts.length,
+                }),
+            delete: jest.fn((_, params) => {
+                return new Promise(resolve => {
+                    resolveDelete = () => {
+                        const index = posts.findIndex(
+                            post => post.id === params.id
+                        );
+                        if (index !== -1) {
+                            posts.splice(index, 1);
+                        }
+                        resolve({ data: params.previousData });
+                    };
+                });
+            }),
+        } as any;
         // This story uses the pessimistic mode by default
-        render(<MutationMode />);
+        render(<MutationMode dataProvider={dataProvider} />);
         await waitFor(() => new Promise(resolve => setTimeout(resolve, 0)));
         fireEvent.click(screen.getByText('Change mutation mode to optimistic'));
         fireEvent.click(screen.getByText('Delete first post'));
@@ -134,6 +159,7 @@ describe('useDelete', () => {
             expect(screen.queryByText('World')).not.toBeNull();
             expect(screen.queryByText('mutating')).not.toBeNull();
         });
+        resolveDelete?.();
         await waitFor(() => {
             expect(screen.queryByText('success')).not.toBeNull();
             expect(screen.queryByText('Hello')).toBeNull();
@@ -147,20 +173,24 @@ describe('useDelete', () => {
             { id: 1, title: 'Hello' },
             { id: 2, title: 'World' },
         ];
+        let resolveDelete: (() => void) | undefined;
         const dataProvider = {
-            getList: () => {
-                return Promise.resolve({
+            getList: () =>
+                Promise.resolve({
                     data: posts,
                     total: posts.length,
-                });
-            },
+                }),
             delete: jest.fn((_, params) => {
                 return new Promise(resolve => {
-                    setTimeout(() => {
-                        const index = posts.findIndex(p => p.id === params.id);
-                        posts.splice(index, 1);
+                    resolveDelete = () => {
+                        const index = posts.findIndex(
+                            post => post.id === params.id
+                        );
+                        if (index !== -1) {
+                            posts.splice(index, 1);
+                        }
                         resolve({ data: params.previousData });
-                    }, 1000);
+                    };
                 });
             }),
         } as any;
@@ -176,6 +206,7 @@ describe('useDelete', () => {
             expect(screen.queryByText('World')).not.toBeNull();
             expect(screen.queryByText('mutating')).not.toBeNull();
         });
+        resolveDelete?.();
         await waitFor(() => {
             expect(screen.queryByText('success')).not.toBeNull();
             expect(screen.queryByText('Hello')).toBeNull();
@@ -218,6 +249,39 @@ describe('useDelete', () => {
                 id: 1,
                 previousData: { foo: 456 },
             });
+        });
+    });
+
+    it('calls onSettled when provided in hook time options', async () => {
+        const dataProvider = testDataProvider({
+            delete: jest.fn(() => Promise.resolve({ data: { id: 1 } } as any)),
+        });
+        let localDeleteOne;
+        const onSettled = jest.fn();
+        const Dummy = () => {
+            const [deleteOne] = useDelete(
+                'foo',
+                {
+                    id: 1,
+                    previousData: { id: 1, bar: 'bar' },
+                },
+                { onSettled }
+            );
+            localDeleteOne = deleteOne;
+            return <span />;
+        };
+
+        render(
+            <CoreAdminContext dataProvider={dataProvider}>
+                <Dummy />
+            </CoreAdminContext>
+        );
+        localDeleteOne('foo', {
+            id: 1,
+            previousData: { foo: 456 },
+        });
+        await waitFor(() => {
+            expect(onSettled).toHaveBeenCalled();
         });
     });
 

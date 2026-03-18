@@ -93,6 +93,7 @@ export const useDeleteMany = <
     const {
         mutationMode = 'pessimistic',
         mutationFn: customMutationFn,
+        onSettled,
         ...mutationOptions
     } = options;
     const wrappedCustomMutationFn = customMutationFn as
@@ -260,16 +261,17 @@ export const useDeleteMany = <
                 ];
                 return queryKeys;
             },
-            onSettled: (
-                result,
-                error,
-                variables,
-                context: { snapshot: Snapshot }
-            ) => {
+            onSettled: (...args) => {
+                const [, , , mutateResult] = args;
+
                 // For deletion, we always refetch after error or success:
-                context.snapshot.forEach(([queryKey]) => {
-                    queryClient.invalidateQueries({ queryKey });
-                });
+                (mutateResult as { snapshot: Snapshot }).snapshot.forEach(
+                    ([queryKey]) => {
+                        queryClient.invalidateQueries({ queryKey });
+                    }
+                );
+
+                onSettled?.(...args);
             },
         }
     );
