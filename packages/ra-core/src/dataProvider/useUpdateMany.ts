@@ -88,8 +88,14 @@ export const useUpdateMany = <
     const {
         mutationMode = 'pessimistic',
         getMutateWithMiddlewares,
+        mutationFn: customMutationFn,
         ...mutationOptions
     } = options;
+    const wrappedCustomMutationFn = customMutationFn as
+        | ((
+              params: Partial<UseUpdateManyMutateParams<RecordType>>
+          ) => Promise<Array<RecordType['id']>>)
+        | undefined;
 
     const dataProviderUpdateMany = useEvent(
         (resource: string, params: UpdateManyParams<RecordType>) =>
@@ -106,27 +112,31 @@ export const useUpdateMany = <
             ...mutationOptions,
             mutationKey: [resource, 'updateMany', params],
             mutationMode,
-            mutationFn: ({ resource, ...params }) => {
-                if (resource == null) {
-                    throw new Error(
-                        'useUpdateMany mutation requires a resource'
-                    );
-                }
-                if (params.ids == null) {
-                    throw new Error(
-                        'useUpdateMany mutation requires an array of ids'
-                    );
-                }
-                if (!params.data) {
-                    throw new Error(
-                        'useUpdateMany mutation requires a non-empty data object'
-                    );
-                }
-                return dataProviderUpdateMany(
-                    resource,
-                    params as UpdateManyParams<RecordType>
-                );
-            },
+            mutationFn: wrappedCustomMutationFn
+                ? async params => ({
+                      data: await wrappedCustomMutationFn(params),
+                  })
+                : ({ resource, ...params }) => {
+                      if (resource == null) {
+                          throw new Error(
+                              'useUpdateMany mutation requires a resource'
+                          );
+                      }
+                      if (params.ids == null) {
+                          throw new Error(
+                              'useUpdateMany mutation requires an array of ids'
+                          );
+                      }
+                      if (!params.data) {
+                          throw new Error(
+                              'useUpdateMany mutation requires a non-empty data object'
+                          );
+                      }
+                      return dataProviderUpdateMany(
+                          resource,
+                          params as UpdateManyParams<RecordType>
+                      );
+                  },
             updateCache: ({ resource, ...params }, { mutationMode }) => {
                 // hack: only way to tell react-query not to fetch this query for the next 5 seconds
                 // because setQueryData doesn't accept a stale time option
@@ -230,12 +240,20 @@ export const useUpdateMany = <
                 ];
                 return queryKeys;
             },
-            getMutateWithMiddlewares: mutationFn => {
+            getMutateWithMiddlewares: mutateWithMutationMode => {
                 if (getMutateWithMiddlewares) {
                     // Immediately get the function with middlewares applied so that even if the middlewares gets unregistered (because of a redirect for instance),
                     // we still have them applied when users have called the mutate function.
                     const mutateWithMiddlewares = getMutateWithMiddlewares(
-                        dataProviderUpdateMany.bind(dataProvider)
+                        wrappedCustomMutationFn
+                            ? (resource, params) =>
+                                  wrappedCustomMutationFn({
+                                      resource,
+                                      ...params,
+                                  } as Partial<
+                                      UseUpdateManyMutateParams<RecordType>
+                                  >)
+                            : dataProviderUpdateMany.bind(dataProvider)
                     );
                     return args => {
                         // This is necessary to avoid breaking changes in useUpdateMany:
@@ -245,7 +263,7 @@ export const useUpdateMany = <
                     };
                 }
 
-                return args => mutationFn(args);
+                return args => mutateWithMutationMode(args);
             },
         }
     );

@@ -92,8 +92,14 @@ export const useUpdate = <RecordType extends RaRecord = any, ErrorType = Error>(
     const {
         mutationMode = 'pessimistic',
         getMutateWithMiddlewares,
+        mutationFn: customMutationFn,
         ...mutationOptions
     } = options;
+    const wrappedCustomMutationFn = customMutationFn as
+        | ((
+              params: Partial<UseUpdateMutateParams<RecordType>>
+          ) => Promise<RecordType>)
+        | undefined;
 
     const dataProviderUpdate = useEvent(
         (resource: string, params: UpdateParams<RecordType>) =>
@@ -110,25 +116,31 @@ export const useUpdate = <RecordType extends RaRecord = any, ErrorType = Error>(
             ...mutationOptions,
             mutationKey: [resource, 'update', params],
             mutationMode,
-            mutationFn: ({ resource, ...params }) => {
-                if (resource == null) {
-                    throw new Error('useUpdate mutation requires a resource');
-                }
-                if (params.id == null) {
-                    throw new Error(
-                        'useUpdate mutation requires a non-empty id'
-                    );
-                }
-                if (!params.data) {
-                    throw new Error(
-                        'useUpdate mutation requires a non-empty data object'
-                    );
-                }
-                return dataProviderUpdate(
-                    resource,
-                    params as UpdateParams<RecordType>
-                );
-            },
+            mutationFn: wrappedCustomMutationFn
+                ? async params => ({
+                      data: await wrappedCustomMutationFn(params),
+                  })
+                : ({ resource, ...params }) => {
+                      if (resource == null) {
+                          throw new Error(
+                              'useUpdate mutation requires a resource'
+                          );
+                      }
+                      if (params.id == null) {
+                          throw new Error(
+                              'useUpdate mutation requires a non-empty id'
+                          );
+                      }
+                      if (!params.data) {
+                          throw new Error(
+                              'useUpdate mutation requires a non-empty data object'
+                          );
+                      }
+                      return dataProviderUpdate(
+                          resource,
+                          params as UpdateParams<RecordType>
+                      );
+                  },
             updateCache: (
                 { resource, ...params },
                 { mutationMode },
@@ -247,12 +259,20 @@ export const useUpdate = <RecordType extends RaRecord = any, ErrorType = Error>(
                 ];
                 return queryKeys;
             },
-            getMutateWithMiddlewares: mutationFn => {
+            getMutateWithMiddlewares: mutateWithMutationMode => {
                 if (getMutateWithMiddlewares) {
                     // Immediately get the function with middlewares applied so that even if the middlewares gets unregistered (because of a redirect for instance),
                     // we still have them applied when users have called the mutate function.
                     const mutateWithMiddlewares = getMutateWithMiddlewares(
-                        dataProviderUpdate.bind(dataProvider)
+                        wrappedCustomMutationFn
+                            ? (resource, params) =>
+                                  wrappedCustomMutationFn({
+                                      resource,
+                                      ...params,
+                                  } as Partial<
+                                      UseUpdateMutateParams<RecordType>
+                                  >)
+                            : dataProviderUpdate.bind(dataProvider)
                     );
                     return args => {
                         // This is necessary to avoid breaking changes in useUpdate:
@@ -262,7 +282,7 @@ export const useUpdate = <RecordType extends RaRecord = any, ErrorType = Error>(
                     };
                 }
 
-                return args => mutationFn(args);
+                return args => mutateWithMutationMode(args);
             },
         }
     );

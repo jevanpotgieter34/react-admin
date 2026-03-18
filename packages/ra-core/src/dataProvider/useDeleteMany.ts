@@ -90,7 +90,16 @@ export const useDeleteMany = <
 ): UseDeleteManyResult<RecordType, MutationError> => {
     const dataProvider = useDataProvider();
     const queryClient = useQueryClient();
-    const { mutationMode = 'pessimistic', ...mutationOptions } = options;
+    const {
+        mutationMode = 'pessimistic',
+        mutationFn: customMutationFn,
+        ...mutationOptions
+    } = options;
+    const wrappedCustomMutationFn = customMutationFn as
+        | ((
+              params: Partial<UseDeleteManyMutateParams<RecordType>>
+          ) => Promise<Array<RecordType['id']> | undefined>)
+        | undefined;
 
     const [mutate, mutationResult] = useMutationWithMutationMode<
         MutationError,
@@ -102,22 +111,26 @@ export const useDeleteMany = <
             ...mutationOptions,
             mutationKey: [resource, 'deleteMany', params],
             mutationMode,
-            mutationFn: ({ resource, ...params }) => {
-                if (resource == null) {
-                    throw new Error(
-                        'useDeleteMany mutation requires a resource'
-                    );
-                }
-                if (params.ids == null) {
-                    throw new Error(
-                        'useDeleteMany mutation requires an array of ids'
-                    );
-                }
-                return dataProvider.deleteMany<RecordType>(
-                    resource,
-                    params as DeleteManyParams<RecordType>
-                );
-            },
+            mutationFn: wrappedCustomMutationFn
+                ? async params => ({
+                      data: await wrappedCustomMutationFn(params),
+                  })
+                : ({ resource, ...params }) => {
+                      if (resource == null) {
+                          throw new Error(
+                              'useDeleteMany mutation requires a resource'
+                          );
+                      }
+                      if (params.ids == null) {
+                          throw new Error(
+                              'useDeleteMany mutation requires an array of ids'
+                          );
+                      }
+                      return dataProvider.deleteMany<RecordType>(
+                          resource,
+                          params as DeleteManyParams<RecordType>
+                      );
+                  },
             updateCache: ({ resource, ...params }, { mutationMode }) => {
                 // hack: only way to tell react-query not to fetch this query for the next 5 seconds
                 // because setQueryData doesn't accept a stale time option
