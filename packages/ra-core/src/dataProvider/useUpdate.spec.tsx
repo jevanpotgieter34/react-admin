@@ -116,8 +116,9 @@ describe('useUpdate', () => {
                 middlewareApplied: params.data?.middlewareApplied,
             }));
             let localUpdate;
+            let mutationData;
             const Dummy = () => {
-                const [update] = useUpdate(undefined, undefined, {
+                const [update, { data }] = useUpdate(undefined, undefined, {
                     mutationFn: customMutationFn,
                     getMutateWithMiddlewares:
                         mutate => async (resource, params) =>
@@ -130,6 +131,7 @@ describe('useUpdate', () => {
                             }),
                 });
                 localUpdate = update;
+                mutationData = data;
                 return <span />;
             };
 
@@ -158,6 +160,14 @@ describe('useUpdate', () => {
             });
 
             expect(dataProvider.update).not.toHaveBeenCalled();
+
+            await waitFor(() => {
+                expect(mutationData).toEqual({
+                    id: 1,
+                    title: 'Hello',
+                    middlewareApplied: true,
+                });
+            });
         });
 
         it('uses the latest declaration time mutationMode', async () => {

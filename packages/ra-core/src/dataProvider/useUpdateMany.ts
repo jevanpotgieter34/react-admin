@@ -96,6 +96,32 @@ export const useUpdateMany = <
         (resource: string, params: UpdateManyParams<RecordType>) =>
             dataProvider.updateMany<RecordType>(resource, params)
     );
+    const customMutationFnWithDataProviderResult = async (
+        resource: string | undefined,
+        params: Omit<UseUpdateManyMutateParams<RecordType>, 'resource'>
+    ) => {
+        if (resource == null) {
+            throw new Error('useUpdateMany mutation requires a resource');
+        }
+        if (params.ids == null) {
+            throw new Error('useUpdateMany mutation requires an array of ids');
+        }
+        if (!params.data) {
+            throw new Error(
+                'useUpdateMany mutation requires a non-empty data object'
+            );
+        }
+        if (customMutationFn == null) {
+            return dataProviderUpdateMany(
+                resource,
+                params as UpdateManyParams<RecordType>
+            );
+        }
+
+        return {
+            data: await customMutationFn({ resource, ...params }),
+        };
+    };
 
     const [mutate, mutationResult] = useMutationWithMutationMode<
         MutationError,
@@ -107,31 +133,8 @@ export const useUpdateMany = <
             ...mutationOptions,
             mutationKey: [resource, 'updateMany', params],
             mutationMode,
-            mutationFn: customMutationFn
-                ? async params => ({
-                      data: await customMutationFn(params),
-                  })
-                : ({ resource, ...params }) => {
-                      if (resource == null) {
-                          throw new Error(
-                              'useUpdateMany mutation requires a resource'
-                          );
-                      }
-                      if (params.ids == null) {
-                          throw new Error(
-                              'useUpdateMany mutation requires an array of ids'
-                          );
-                      }
-                      if (!params.data) {
-                          throw new Error(
-                              'useUpdateMany mutation requires a non-empty data object'
-                          );
-                      }
-                      return dataProviderUpdateMany(
-                          resource,
-                          params as UpdateManyParams<RecordType>
-                      );
-                  },
+            mutationFn: ({ resource, ...params }) =>
+                customMutationFnWithDataProviderResult(resource, params),
             updateCache: ({ resource, ...params }, { mutationMode }) => {
                 // hack: only way to tell react-query not to fetch this query for the next 5 seconds
                 // because setQueryData doesn't accept a stale time option
@@ -242,12 +245,13 @@ export const useUpdateMany = <
                     const mutateWithMiddlewares = getMutateWithMiddlewares(
                         customMutationFn
                             ? (resource, params) =>
-                                  customMutationFn({
+                                  customMutationFnWithDataProviderResult(
                                       resource,
-                                      ...params,
-                                  } as Partial<
-                                      UseUpdateManyMutateParams<RecordType>
-                                  >)
+                                      params as Omit<
+                                          UseUpdateManyMutateParams<RecordType>,
+                                          'resource'
+                                      >
+                                  )
                             : dataProviderUpdateMany.bind(dataProvider)
                     );
                     return args => {

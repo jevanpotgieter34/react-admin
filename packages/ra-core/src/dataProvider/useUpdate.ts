@@ -100,6 +100,32 @@ export const useUpdate = <RecordType extends RaRecord = any, ErrorType = Error>(
         (resource: string, params: UpdateParams<RecordType>) =>
             dataProvider.update<RecordType>(resource, params)
     );
+    const customMutationFnWithDataProviderResult = async (
+        resource: string | undefined,
+        params: Omit<UseUpdateMutateParams<RecordType>, 'resource'>
+    ) => {
+        if (resource == null) {
+            throw new Error('useUpdate mutation requires a resource');
+        }
+        if (params.id == null) {
+            throw new Error('useUpdate mutation requires a non-empty id');
+        }
+        if (!params.data) {
+            throw new Error(
+                'useUpdate mutation requires a non-empty data object'
+            );
+        }
+        if (customMutationFn == null) {
+            return dataProviderUpdate(
+                resource,
+                params as UpdateParams<RecordType>
+            );
+        }
+
+        return {
+            data: await customMutationFn({ resource, ...params }),
+        };
+    };
 
     const [mutate, mutationResult] = useMutationWithMutationMode<
         ErrorType,
@@ -111,31 +137,8 @@ export const useUpdate = <RecordType extends RaRecord = any, ErrorType = Error>(
             ...mutationOptions,
             mutationKey: [resource, 'update', params],
             mutationMode,
-            mutationFn: customMutationFn
-                ? async params => ({
-                      data: await customMutationFn(params),
-                  })
-                : ({ resource, ...params }) => {
-                      if (resource == null) {
-                          throw new Error(
-                              'useUpdate mutation requires a resource'
-                          );
-                      }
-                      if (params.id == null) {
-                          throw new Error(
-                              'useUpdate mutation requires a non-empty id'
-                          );
-                      }
-                      if (!params.data) {
-                          throw new Error(
-                              'useUpdate mutation requires a non-empty data object'
-                          );
-                      }
-                      return dataProviderUpdate(
-                          resource,
-                          params as UpdateParams<RecordType>
-                      );
-                  },
+            mutationFn: ({ resource, ...params }) =>
+                customMutationFnWithDataProviderResult(resource, params),
             updateCache: (
                 { resource, ...params },
                 { mutationMode },
@@ -261,12 +264,13 @@ export const useUpdate = <RecordType extends RaRecord = any, ErrorType = Error>(
                     const mutateWithMiddlewares = getMutateWithMiddlewares(
                         customMutationFn
                             ? (resource, params) =>
-                                  customMutationFn({
+                                  customMutationFnWithDataProviderResult(
                                       resource,
-                                      ...params,
-                                  } as Partial<
-                                      UseUpdateMutateParams<RecordType>
-                                  >)
+                                      params as Omit<
+                                          UseUpdateMutateParams<RecordType>,
+                                          'resource'
+                                      >
+                                  )
                             : dataProviderUpdate.bind(dataProvider)
                     );
                     return args => {

@@ -96,6 +96,27 @@ export const useDelete = <
         onSettled,
         ...mutationOptions
     } = options;
+    const customMutationFnWithDataProviderResult = async (
+        resource: string | undefined,
+        params: Omit<UseDeleteMutateParams<RecordType>, 'resource'>
+    ) => {
+        if (resource == null) {
+            throw new Error('useDelete mutation requires a resource');
+        }
+        if (params.id == null) {
+            throw new Error('useDelete mutation requires a non-empty id');
+        }
+        if (customMutationFn == null) {
+            return dataProvider.delete<RecordType>(
+                resource,
+                params as DeleteParams<RecordType>
+            );
+        }
+
+        return {
+            data: await customMutationFn({ resource, ...params }),
+        };
+    };
 
     const [mutate, mutationResult] = useMutationWithMutationMode<
         MutationError,
@@ -107,26 +128,8 @@ export const useDelete = <
             ...mutationOptions,
             mutationKey: [resource, 'delete', params],
             mutationMode,
-            mutationFn: customMutationFn
-                ? async params => ({
-                      data: await customMutationFn(params),
-                  })
-                : ({ resource, ...params }) => {
-                      if (resource == null) {
-                          throw new Error(
-                              'useDelete mutation requires a resource'
-                          );
-                      }
-                      if (params.id == null) {
-                          throw new Error(
-                              'useDelete mutation requires a non-empty id'
-                          );
-                      }
-                      return dataProvider.delete<RecordType>(
-                          resource,
-                          params as DeleteParams<RecordType>
-                      );
-                  },
+            mutationFn: ({ resource, ...params }) =>
+                customMutationFnWithDataProviderResult(resource, params),
             updateCache: ({ resource, ...params }, { mutationMode }) => {
                 // hack: only way to tell react-query not to fetch this query for the next 5 seconds
                 // because setQueryData doesn't accept a stale time option
